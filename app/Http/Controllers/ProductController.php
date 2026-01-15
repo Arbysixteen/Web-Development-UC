@@ -109,29 +109,7 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        // Generate sample product data
-        $categories = ['Frontend', 'Backend', 'Fullstack', 'E-Book', 'Template', 'Plugin'];
-        $types = ['Website Development', 'Mobile App', 'UI/UX Design', 'API Integration', 'Database Design'];
-
-        $product = (object) [
-            'id' => $id,
-            'name' => $types[array_rand($types)] . ' Package ' . $id,
-            'description' => 'Professional development service with modern technologies and best practices. Includes full source code, documentation, and 30 days support.',
-            'price' => rand(100, 5000) * 1000,
-            'category' => $categories[array_rand($categories)],
-            'image' => 'https://picsum.photos/seed/' . $id . '/800/600',
-            'rating' => rand(35, 50) / 10,
-            'sold' => rand(10, 500),
-            'features' => [
-                'Responsive Design',
-                'Modern UI/UX',
-                'SEO Optimized',
-                'Fast Loading',
-                'Cross-browser Compatible',
-                '30 Days Support'
-            ]
-        ];
-
+        $product = Product::findOrFail($id);
         return view('products.show', compact('product'));
     }
 

@@ -1,11 +1,18 @@
 <!DOCTYPE html>
-<html lang="id">
-
+<html lang="id" id="htmlRoot">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Digital Marketplace') - Digital Products & Services</title>
+    
+    <!-- Theme Init Script - Must be before CSS -->
+    <script>
+        (function() {
+            var theme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -15,16 +22,32 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        :root {
-            --bg-primary: #1a1a1a;
-            --bg-secondary: #242424;
-            --bg-tertiary: #2d2d2d;
+        /* Default Dark Theme */
+        :root,
+        html[data-theme="dark"] {
+            --bg-primary: #0f0f0f;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #242424;
             --text-primary: #ffffff;
             --text-secondary: #a0a0a0;
             --accent-color: #6366f1;
             --accent-hover: #818cf8;
-            --border-color: #3d3d3d;
-            --card-bg: #242424;
+            --border-color: #2d2d2d;
+            --card-bg: #1a1a1a;
+            --success-color: #22c55e;
+        }
+
+        /* Light Theme */
+        html[data-theme="light"] {
+            --bg-primary: #f8f9fa;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f1f3f5;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --accent-color: #6366f1;
+            --accent-hover: #4f46e5;
+            --border-color: #dee2e6;
+            --card-bg: #ffffff;
             --success-color: #22c55e;
         }
 
@@ -39,6 +62,7 @@
             background-color: var(--bg-primary);
             color: var(--text-primary);
             line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         /* Navbar Styles */
@@ -215,6 +239,94 @@
             color: var(--success-color);
             border-radius: 8px;
         }
+
+        /* Theme Toggle Slide Button */
+        .theme-toggle-slide {
+            position: relative;
+            width: 65px;
+            height: 32px;
+            background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+            border: 2px solid var(--border-color);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            padding: 3px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .theme-toggle-slide:hover {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .theme-toggle-slide:active {
+            transform: scale(0.95);
+        }
+
+        .theme-toggle-slider {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+            border-radius: 50%;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.75rem;
+            left: 3px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        html[data-theme="light"] .theme-toggle-slide {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        html[data-theme="light"] .theme-toggle-slider {
+            left: calc(100% - 27px);
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            box-shadow: 0 2px 8px rgba(251, 191, 36, 0.5);
+        }
+
+        /* Background stars animation for dark mode */
+        .theme-toggle-slide::before {
+            content: '✦';
+            position: absolute;
+            left: 8px;
+            color: #fbbf24;
+            font-size: 0.6rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        html[data-theme="dark"] .theme-toggle-slide::before {
+            opacity: 0.7;
+        }
+
+        /* Sun rays for light mode */
+        .theme-toggle-slide::after {
+            content: '☀';
+            position: absolute;
+            right: 8px;
+            color: #f59e0b;
+            font-size: 0.7rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        html[data-theme="light"] .theme-toggle-slide::after {
+            opacity: 0.8;
+        }
+
+        /* Card transitions */
+        .card-custom {
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
     </style>
     @stack('styles')
 </head>
@@ -276,6 +388,13 @@
                         <a href="{{ route('register') }}" class="btn btn-primary-custom btn-sm">
                             <i class="bi bi-person-plus me-1"></i>Register
                         </a>
+                        
+                        <!-- Theme Toggle for Guest -->
+                        <div class="theme-toggle-slide" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+                            <div class="theme-toggle-slider">
+                                <i class="bi bi-moon-fill" id="themeIcon"></i>
+                            </div>
+                        </div>
                     @else
                         @if(auth()->user()->isCustomer())
                             <a href="{{ route('cart.index') }}" class="btn btn-outline-custom btn-sm position-relative">
@@ -340,6 +459,13 @@
                                     </form>
                                 </li>
                             </ul>
+                        </div>
+                        
+                        <!-- Theme Toggle for Authenticated Users -->
+                        <div class="theme-toggle-slide" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+                            <div class="theme-toggle-slider">
+                                <i class="bi bi-moon-fill" id="themeIconAuth"></i>
+                            </div>
                         </div>
                     @endguest
                 </div>
@@ -408,6 +534,36 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Theme Toggle Script -->
+    <script>
+        // Toggle between light and dark theme
+        function toggleTheme() {
+            var html = document.documentElement;
+            var currentTheme = html.getAttribute('data-theme') || 'dark';
+            var newTheme = (currentTheme === 'light') ? 'dark' : 'light';
+            
+            // Apply new theme
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            // Update all icons
+            var icons = document.querySelectorAll('[id^="themeIcon"]');
+            for (var i = 0; i < icons.length; i++) {
+                icons[i].className = (newTheme === 'dark') ? 'bi bi-moon-fill' : 'bi bi-sun-fill';
+            }
+        }
+
+        // Initialize icons on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            var theme = localStorage.getItem('theme') || 'dark';
+            var icons = document.querySelectorAll('[id^="themeIcon"]');
+            for (var i = 0; i < icons.length; i++) {
+                icons[i].className = (theme === 'dark') ? 'bi bi-moon-fill' : 'bi bi-sun-fill';
+            }
+        });
+    </script>
+    
     @stack('scripts')
 </body>
 

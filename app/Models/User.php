@@ -36,6 +36,16 @@ class User extends Authenticatable
         return $this->hasMany(Order::class);
     }
 
+    public function wishlists()
+    {
+        return $this->hasMany(Wishlist::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
@@ -44,5 +54,15 @@ class User extends Authenticatable
     public function isCustomer(): bool
     {
         return $this->role === 'customer';
+    }
+
+    public function hasInWishlist($productId): bool
+    {
+        return $this->wishlists()->where('product_id', $productId)->exists();
+    }
+
+    public function hasReviewed($productId): bool
+    {
+        return $this->reviews()->where('product_id', $productId)->exists();
     }
 }

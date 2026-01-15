@@ -7,6 +7,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\WishlistController;
+use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -56,6 +59,24 @@ Route::middleware('auth')->prefix('orders')->name('orders.')->controller(OrderCo
     Route::get('/checkout', 'checkout')->name('checkout');
     Route::post('/checkout', 'processCheckout')->name('process-checkout');
     Route::get('/{id}', 'show')->name('show');
+});
+
+// Wishlist routes (authenticated users)
+Route::middleware('auth')->prefix('wishlist')->name('wishlist.')->controller(WishlistController::class)->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::post('/toggle', 'toggle')->name('toggle');
+});
+
+// Review routes (authenticated users)
+Route::middleware('auth')->prefix('reviews')->name('reviews.')->controller(ReviewController::class)->group(function () {
+    Route::post('/', 'store')->name('store');
+    Route::delete('/{id}', 'destroy')->name('destroy');
+});
+
+// Profile routes (authenticated users)
+Route::middleware('auth')->prefix('profile')->name('profile.')->controller(ProfileController::class)->group(function () {
+    Route::get('/edit', 'edit')->name('edit');
+    Route::put('/update', 'update')->name('update');
 });
 
 // Admin routes

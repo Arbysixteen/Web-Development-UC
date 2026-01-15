@@ -18,9 +18,13 @@
                     <h1 class="section-title mb-1">All Products</h1>
                     <p class="text-secondary mb-0">Discover our collection of digital products and services</p>
                 </div>
-                <a href="{{ route('products.create') }}" class="btn btn-primary-custom">
-                    <i class="bi bi-plus-lg me-2"></i>Add new product
-                </a>
+                @auth
+                    @if(auth()->user()->role === 'admin')
+                        <a href="{{ route('products.create') }}" class="btn btn-primary-custom">
+                            <i class="bi bi-plus-lg me-2"></i>Add new product
+                        </a>
+                    @endif
+                @endauth
             </div>
 
             <!-- Filter Section -->
