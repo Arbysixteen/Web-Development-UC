@@ -397,6 +397,9 @@
                         </div>
                     @else
                         @if(auth()->user()->isCustomer())
+                            <a href="{{ route('wishlist.index') }}" class="btn btn-outline-custom btn-sm position-relative" title="My Wishlist">
+                                <i class="bi bi-heart"></i>
+                            </a>
                             <a href="{{ route('cart.index') }}" class="btn btn-outline-custom btn-sm position-relative">
                                 <i class="bi bi-cart3"></i>
                                 @php
@@ -439,6 +442,11 @@
                                     <li>
                                         <a class="dropdown-item" href="{{ route('orders.index') }}" style="color: var(--text-primary);">
                                             <i class="bi bi-bag me-2"></i>My Orders
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('wishlist.index') }}" style="color: var(--text-primary);">
+                                            <i class="bi bi-heart me-2"></i>My Wishlist
                                         </a>
                                     </li>
                                     <li>
